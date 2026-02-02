@@ -2,6 +2,7 @@ package it.DAO;
 
 import it.db.DBConnection;
 import it.domain_model.analisi.RisultatoRanking;
+import it.domain_model.analisi.StatisticheCalciatoreStagione;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -58,43 +59,46 @@ public class StatisticheDAO {
     }
 
 
-    public Map<String, Double> getStatisticheCalciatorePerStagione(int idCalciatore, List<String> statistiche, String stagione) {
-        String targetList = statistiche.stream()
-                .map(s -> {
-                    if (s.toLowerCase().contains("precisione")) {
-                        return "AVG(s." + s + ") AS " + s;
-                    } else {
-                        return "SUM(s." + s + ") AS " + s;
-                    }
-                }).collect(Collectors.joining(", "));
-
-        String sql = "SELECT " + targetList + " " +
-                "FROM Statistiche s " +
-                "JOIN Partita p ON s.Partita = p.idPartita " +
-                "WHERE s.Calciatore = ? AND p.stagione = ? " +
-                "GROUP BY s.Calciatore";
-
-        Map<String, Double> map = new HashMap<>();
+    public StatisticheCalciatoreStagione getStatisticheCalciatorePerStagione(int idCalciatore, String stagione) {
+        String sql = "SELECT SUM(s.minutiGiocati), SUM(s.gol), SUM(s.assist), SUM(s.xG), SUM(s.xA), " +
+                "SUM(s.tiriTotali), SUM(s.tiriInPorta), SUM(s.dribblingRiusciti), " +
+                "SUM(s.tocchiInAreaAvversaria), SUM(s.contrastiVinti), SUM(s.duelliAereiVinti), " +
+                "SUM(s.passaggiChiave), SUM(s.crossRiusciti), SUM(s.passaggiRealizzati), " +
+                "SUM(s.parate), SUM(s.cleanSheet), SUM(s.cartelliniGialli), SUM(s.cartelliniRossi) " +
+                "FROM Statistiche s JOIN Partita p ON s.Partita = p.idPartita " +
+                "WHERE s.Calciatore = ? AND p.stagione = ? GROUP BY s.Calciatore";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, idCalciatore);
             ps.setString(2, stagione);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                for (String statistica : statistiche) {
-                    map.put(statistica, rs.getDouble(statistica));
-                }
+                return new StatisticheCalciatoreStagione(
+                        rs.getInt(1),    // minutiGiocati (int)
+                        rs.getDouble(2), // gol (double)
+                        rs.getDouble(3), // assist (double)
+                        rs.getDouble(4), // xG
+                        rs.getDouble(5), // xA
+                        rs.getDouble(6), // tiriTotali
+                        rs.getDouble(7), // tiriInPorta
+                        rs.getDouble(8), // dribbling
+                        rs.getDouble(9), // tocchiArea
+                        rs.getDouble(10),// contrasti
+                        rs.getDouble(11),// duelli
+                        rs.getDouble(12),// passaggiChiave
+                        rs.getDouble(13),// cross
+                        rs.getDouble(14),// passaggiRealizzati
+                        rs.getDouble(15),// parate
+                        rs.getDouble(16),// cleanSheet
+                        rs.getInt(17),   // gialli (int)
+                        rs.getInt(18)    // rossi (int)
+                );
             }
-
-            return map;
-
         } catch (SQLException e) {
-            System.out.println("Errore nel caricamento delle statistiche: " + e.getMessage());
-            return new HashMap<>();
+            System.err.println("Errore nell'estrazione delle statistiche: " + e.getMessage());
         }
+        return null;
     }
 }

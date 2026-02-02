@@ -1,8 +1,8 @@
 package it.business_logic;
 
-import it.domain_model.analisi.RisultatoConfrontoCalciatori;
+import it.domain_model.analisi.StatisticheCalciatoreStagione;
+import it.domain_model.trattamento_statistiche.SelettoreStrategia;
 import it.domain_model.analisi.RisultatoRanking;
-import it.domain_model.analisi.RisultatoStatisticheCalciatore;
 import it.domain_model.giocatori.Calciatore;
 import it.domain_model.giocatori.Partita;
 import it.domain_model.giocatori.Ruolo;
@@ -15,8 +15,6 @@ import it.DAO.ReportDAO;
 import it.DAO.CalciatoreDAO;
 import it.DAO.OsservatoreDAO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,8 +94,6 @@ public class OsservatoreController {
         }
     }
 
-    // --- LISTE ---
-
     public void creaNuovaLista(String nome, String descrizione, Osservatore osservatore) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Il nome della lista è obbligatorio.");
@@ -153,81 +149,18 @@ public class OsservatoreController {
         lista.rimuoviCalciatore(idCalciatore);
     }
 
-    public RisultatoConfrontoCalciatori comparaCalciatori(List<Calciatore> calciatori, String stagione) {
-        if (calciatori.size() > 5) {
-            throw new IllegalArgumentException("Non si possono confrontare più di 5 calciatori contemporaneamente");
-        }
+    public StatisticheCalciatoreStagione getDettaglioStatistiche(Calciatore selezionato, String stagione, String strategia) {
+        if (selezionato == null) return null;
 
-        Ruolo ruoloRiferimento = getRuoloRiferimento(calciatori);
-        List<RisultatoStatisticheCalciatore> risultati = new ArrayList<>();
+        StatisticheCalciatoreStagione stats = statisticheDAO.getStatisticheCalciatorePerStagione(selezionato.getId(), stagione);
 
-        for (Calciatore c : calciatori) {
-            Map<String, Double> stats = getStatisticheCalciatoreNormalizzate(c.getId(), ruoloRiferimento, stagione);
-            risultati.add(new RisultatoStatisticheCalciatore(c, stats));
-        }
+        if (stats == null) return null;
 
-        Map<String, Calciatore> miglioriPerMetrica = new HashMap<>();
-        if (!risultati.isEmpty()) {
-            for (String metrica : risultati.get(0).getStatistiche().keySet()) {
-                RisultatoStatisticheCalciatore best = null;
-                double maxValue = -1.0;
-
-                for (RisultatoStatisticheCalciatore r : risultati) {
-                    Double valore = r.getStat(metrica);
-                    if (valore != null && valore > maxValue) {
-                        maxValue = valore;
-                        best = r;
-                    }
-                }
-                if (best != null) miglioriPerMetrica.put(metrica, best.getCalciatore());
-            }
-        }
-
-        return new RisultatoConfrontoCalciatori(risultati, miglioriPerMetrica);
+        SelettoreStrategia ss = new SelettoreStrategia();
+        ss.selezionaStrategia(strategia);
+        stats = ss.elabora(stats);
+        return stats;
     }
-
-    private Map<String, Double> getStatisticheCalciatoreNormalizzate(int idCalciatore, Ruolo ruoloRiferimento, String stagione) {
-        List<String> metriche = new ArrayList<>(List.of("minutiGiocati", "goal", "xG", "assist", "xA"));
-
-        if (ruoloRiferimento != null) {
-            metriche.addAll(ruoloRiferimento.getMetricheSpecifiche());
-        }
-
-        Map<String, Double> rawData = statisticheDAO.getStatisticheCalciatorePerStagione(idCalciatore, metriche, stagione);
-        if (rawData.isEmpty()) return rawData;
-
-        double minuti = rawData.getOrDefault("minutiGiocati", 0.0);
-        double factor = (minuti > 0) ? (90.0 / minuti) : 0.0;
-
-        Map<String, Double> risultato = new HashMap<>();
-
-        for (Map.Entry<String, Double> entry : rawData.entrySet()) {
-            String k = entry.getKey();
-            if (k.equals("minutiGiocati") || k.contains("precisione") || k.startsWith("cartellini")) {
-                risultato.put(k, entry.getValue());
-            } else {
-                risultato.put(k, entry.getValue() * factor);
-            }
-        }
-        return risultato;
-    }
-
-    private Ruolo getRuoloRiferimento(List<Calciatore> calciatori) {
-        if (calciatori == null || calciatori.isEmpty()) return null;
-        for (Ruolo r1 : calciatori.get(0).getRuoli()) {
-            String target = r1.getMacroRuolo();
-            boolean common = true;
-            for (int i = 1; i < calciatori.size(); i++) {
-                if (calciatori.get(i).getRuoli().stream().noneMatch(r -> r.getMacroRuolo().equals(target))) {
-                    common = false;
-                    break;
-                }
-            }
-            if (common) return r1;
-        }
-        return null;
-    }
-
 
     public List<Calciatore> cercaGiocatori(List<String> sigleRuoli, Integer idSquadra, String stagione,
                                            String campionato, Integer minEta, Integer maxEta,
