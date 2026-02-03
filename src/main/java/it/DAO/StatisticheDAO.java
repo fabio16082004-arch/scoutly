@@ -3,30 +3,26 @@ package it.DAO;
 import it.db.DBConnection;
 import it.domain_model.analisi.RisultatoRanking;
 import it.domain_model.analisi.StatisticheCalciatoreStagione;
+import it.domain_model.giocatori.Ruolo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StatisticheDAO {
-    public List<RisultatoRanking> getRankingCalciatori(String campionato, String stagione, String macroRuolo, String statisticaRiferimento, int minMinutiGiocati) {
+    public List<RisultatoRanking> getRankingCalciatori(String campionato, String stagione, Ruolo ruolo, String statisticaRiferimento, int minMinutiGiocati) {
 
         List<RisultatoRanking> ranking = new ArrayList<>();
-
-        String funzioneAggregazione = statisticaRiferimento.toLowerCase().contains("precisione") ? "AVG" : "SUM";
-
         String sql =
-                "SELECT c.idCalciatore, c.nome, c.cognome, " +
-                        funzioneAggregazione + "(s." + statisticaRiferimento + ") AS valore, " +
+                "SELECT c.idCalciatore, c.nome, c.cognome, SUM(s." + statisticaRiferimento + ") AS valore, " +
                         "SUM(s.minutiGiocati) AS minutiTotali " +
                         "FROM Calciatore c " +
                         "JOIN Statistiche s ON c.idCalciatore = s.Calciatore " +
                         "JOIN Partita p ON s.Partita = p.idPartita " +
                         "JOIN Ruolo r ON c.idRuolo = r.idRuolo " +
-                        "WHERE p.campionato = ? AND p.stagione = ? AND r.macroRuolo = ? " +
+                        "WHERE p.campionato = ? AND p.stagione = ? AND r.Sigla = ? " +
                         "GROUP BY c.idCalciatore, c.nome, c.cognome " +
                         "HAVING SUM(s.minutiGiocati) >= ?";
 
@@ -35,7 +31,7 @@ public class StatisticheDAO {
 
             ps.setString(1, campionato);
             ps.setString(2, stagione);
-            ps.setString(3, macroRuolo);
+            ps.setString(3, ruolo.getSigla());
             ps.setInt(4, minMinutiGiocati);
 
             ResultSet rs = ps.executeQuery();

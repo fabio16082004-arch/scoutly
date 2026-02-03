@@ -35,6 +35,15 @@ public enum Ruolo {
         this.macroRuolo = macroRuolo;
     }
 
+    public static Ruolo valueOfSigla(String sigla) {
+        for (Ruolo r : Ruolo.values()) {
+            if (r.getSigla().equals(sigla)) {
+                return r;
+            }
+        }
+        throw new IllegalArgumentException("Nessun ruolo trovato per la sigla: " + sigla);
+    }
+
     public String getSigla() { return sigla; }
     public String getDescrizioneEstesa() { return descrizioneEstesa; }
     public String getMacroRuolo() { return macroRuolo; }

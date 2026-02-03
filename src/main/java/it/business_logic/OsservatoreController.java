@@ -34,30 +34,18 @@ public class OsservatoreController {
         this.osservatoreDAO = oDAO;
     }
 
-    public List<RisultatoRanking> ottieniRanking(String campionato, String stagione, String statistica, Ruolo ruolo, int minMinutiGiocati) {
-        if (campionato == null || campionato.isBlank()) {
-            throw new IllegalArgumentException("Il campionato è obbligatorio.");
-        }
-        if (statistica == null || statistica.isBlank()) {
-            throw new IllegalArgumentException("La statistica è obbligatoria.");
-        }
-        if (stagione == null || stagione.isBlank()) {
-            throw new IllegalArgumentException("La stagione è obbligatoria.");
-        }
+    public List<RisultatoRanking> ottieniRanking(String campionato, String stagione, String statistica, Ruolo ruolo, int minMinutiGiocati, String tipoStrategia) {
+        if (campionato == null || campionato.isBlank()) throw new IllegalArgumentException("Campionato obbligatorio.");
+        if (statistica == null || statistica.isBlank()) throw new IllegalArgumentException("Statistica obbligatoria.");
 
-        List<RisultatoRanking> ranking = statisticheDAO.getRankingCalciatori(campionato, stagione, ruolo.getMacroRuolo(), statistica, minMinutiGiocati);
+        List<RisultatoRanking> ranking = statisticheDAO.getRankingCalciatori(campionato, stagione, ruolo, statistica, minMinutiGiocati);
 
-        for (RisultatoRanking riga : ranking) {
-            double valore = riga.getValore();
-            int minutiTotali = riga.getMinutiTotali();
-            double factor = (minutiTotali > 0) ? (90.0 / minutiTotali) : 0.0;
-
-            if (!(statistica.equals("minutiGiocati") || statistica.equals("cartellini") || statistica.equals("precisione"))) {
-                riga.setValore(valore * factor);
-            }
-        }
+        SelettoreStrategia selettore = new SelettoreStrategia();
+        selettore.selezionaStrategia(tipoStrategia);
+        selettore.applicaAlRanking(ranking, statistica);
 
         ranking.sort((m1, m2) -> Double.compare(m2.getValore(), m1.getValore()));
+
         return ranking;
     }
 
