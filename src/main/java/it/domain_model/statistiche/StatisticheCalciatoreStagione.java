@@ -1,4 +1,4 @@
-package it.domain_model.analisi;
+package it.domain_model.statistiche;
 
 public class StatisticheCalciatoreStagione {
 

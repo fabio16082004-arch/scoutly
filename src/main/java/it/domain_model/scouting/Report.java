@@ -22,7 +22,7 @@ public class Report {
     public Report(Osservatore utente, Calciatore calciatore) {
         this.utente = utente;
         this.calciatore = calciatore;
-        this.partite = new ArrayList<>(); // Inizializzata vuota
+        this.partite = new ArrayList<>();
         this.voti = new HashMap<>();
         this.dataCreazione = LocalDate.now();
         this.votoComplessivo = 0;

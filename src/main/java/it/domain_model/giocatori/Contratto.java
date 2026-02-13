@@ -1,7 +1,6 @@
 package it.domain_model.giocatori;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class Contratto {
     private final Calciatore calciatore;
@@ -44,10 +43,6 @@ public class Contratto {
         if (stipendio < 0) {
             throw new IllegalArgumentException("Lo stipendio non può essere negativo: " + stipendio);
         }
-    }
-
-    public boolean isScaduto() {
-        return LocalDate.now().isAfter(dataFineContratto);
     }
 
     public float getStipendio() { return stipendio; }

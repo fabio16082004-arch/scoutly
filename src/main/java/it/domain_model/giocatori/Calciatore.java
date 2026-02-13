@@ -17,8 +17,6 @@ public class Calciatore {
     private float altezza;
     private Set<Ruolo> ruoli;
 
-    private Contratto contrattoAttuale;
-
     public Calciatore(int id, String nome, String cognome, LocalDate dataNascita,
                       String nazionalita, float peso, float altezza, Set<Ruolo> ruoli) {
 
@@ -48,22 +46,6 @@ public class Calciatore {
         this.ruoli = new HashSet<>(ruoli);
     }
 
-    public void setContrattoAttuale(Contratto contratto) {
-        if (contratto == null) {
-            this.contrattoAttuale = null;
-            return;
-        }
-
-        if (contratto.getCalciatore() != this) {
-            throw new IllegalArgumentException("Questo contratto non appartiene a questo calciatore.");
-        }
-        this.contrattoAttuale = contratto;
-    }
-
-    public boolean isSvincolato() {
-        return contrattoAttuale == null || contrattoAttuale.isScaduto();
-    }
-
     public int getEta() {
         return Period.between(dataNascita, LocalDate.now()).getYears();
     }
@@ -90,7 +72,4 @@ public class Calciatore {
         return Collections.unmodifiableSet(ruoli);
     }
 
-    public Contratto getContrattoAttuale() {
-        return contrattoAttuale;
-    }
 }

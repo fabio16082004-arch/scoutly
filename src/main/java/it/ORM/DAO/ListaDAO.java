@@ -1,8 +1,7 @@
-package it.DAO;
+package it.ORM.DAO;
 
-import it.db.DBConnection;
+import it.ORM.db.DBConnection;
 import it.domain_model.giocatori.Calciatore;
-import it.domain_model.giocatori.Ruolo;
 import it.domain_model.scouting.Lista;
 import it.domain_model.utenti.Osservatore;
 
@@ -12,9 +11,48 @@ import java.util.*;
 
 public class ListaDAO {
 
-    public int creaLista(Lista lista) {
-        String sql = "INSERT INTO Lista (nomeLista, descrizione, dataCreazione, osservatore) " +
-                "VALUES (?, ?, ?, ?, ?) RETURNING idLista";
+    private final CalciatoreDAO calciatoreDAO;
+    private OsservatoreDAO osservatoreDAO;
+
+    public ListaDAO(CalciatoreDAO calciatoreDAO, OsservatoreDAO osservatoreDAO) {
+        this.calciatoreDAO = calciatoreDAO;
+        this.osservatoreDAO = osservatoreDAO;
+    }
+
+    public Lista getListaById(int idLista) {
+        String query = "SELECT * FROM Lista WHERE idLista = ?";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, idLista);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String nome = rs.getString("nomeLista");
+                String descrizione = rs.getString("descrizione");
+                LocalDate dataCreazione = rs.getDate("dataCreazione").toLocalDate();
+                int idOsservatore = rs.getInt("osservatore");
+
+                Osservatore osservatore = osservatoreDAO.getById(idOsservatore);
+
+                Lista lista = new Lista(idLista, nome, descrizione, osservatore, dataCreazione);
+
+                List<Calciatore> calciatoriAssociati = calciatoreDAO.getCalciatoriByLista(idLista);
+
+                for (Calciatore c : calciatoriAssociati) {
+                    lista.aggiungiCalciatore(c);
+                }
+
+                return lista;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void creaLista(Lista lista) {
+        String sql = "INSERT INTO Lista (nomeLista, descrizione, dataCreazione, osservatore) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -24,12 +62,7 @@ public class ListaDAO {
             ps.setObject(3, lista.getDataCreazione());
             ps.setInt(4, lista.getOsservatore().getId());
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-                throw new RuntimeException("Creazione lista fallita: nessun ID restituito");
-            }
+            ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException("Errore nella creazione della lista", e);
@@ -111,102 +144,6 @@ public class ListaDAO {
         }
     }
 
-    public List<Calciatore> getTuttiCalciatoriInLista(int idLista) {
-        List<Calciatore> filtrati = new ArrayList<>();
-
-        String sql = "SELECT c.*, STRING_AGG(rc.Sigla, ', ') AS sigle_ruoli" +
-            "FROM Calciatore c" +
-            "JOIN ListaCalciatore lc ON c.idCalciatore = lc.Calciatore" +
-            "LEFT JOIN RuoloCalciatore rc ON rc.Calciatore = c.idCalciatore" +
-            "WHERE lc.idLista = ?" +
-            "GROUP BY c.idCalciatore";
-
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, idLista);
-
-            getCalciatori(filtrati, ps);
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Errore SQL durante il recupero di tutti i calciatori in lista", e);
-        }
-
-        return filtrati;
-    }
-
-    private void getCalciatori(List<Calciatore> filtrati, PreparedStatement ps) throws SQLException {
-        try (ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                int id = rs.getInt("idcalciatore");
-                String nome = rs.getString("nome");
-                String cognome = rs.getString("cognome");
-                LocalDate dataNascita = rs.getObject("dataNascita", LocalDate.class);
-                String nazionalita = rs.getString("nazionalità");
-                float peso = rs.getFloat("peso");
-                float altezza = rs.getFloat("altezza");
-
-                Set<Ruolo> ruoliSet = new HashSet<>();
-                String ruoliAggregati = rs.getString("sigle_ruoli");
-
-                if (ruoliAggregati != null) {
-                    String[] sigle = ruoliAggregati.split(", ");
-                    for (String s : sigle) {
-                        try {
-                            ruoliSet.add(Ruolo.valueOf(s));
-                        } catch (IllegalArgumentException ignored) {}
-                    }
-                }
-
-                Calciatore c = new Calciatore(id, nome, cognome, dataNascita, nazionalita, peso, altezza, ruoliSet);
-                filtrati.add(c);
-            }
-        }
-    }
-
-    public Lista getListaById(int idLista) {
-        String sql = """
-        SELECT l.idLista, l.nomeLista, l.descrizione, l.dataCreazione,
-               o.idOsservatore, o.username, o.email
-        FROM Lista l
-        JOIN Osservatore o ON l.osservatore = o.idOsservatore
-        WHERE l.idLista = ?
-    """;
-
-        try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, idLista);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                Osservatore osservatore = new Osservatore(
-                        rs.getInt("idOsservatore"),
-                        rs.getString("username"),
-                        rs.getString("email")
-                );
-
-                Lista lista = new Lista(
-                        rs.getInt("idLista"),
-                        rs.getString("nomeLista"),
-                        rs.getString("descrizione"),
-                        osservatore,
-                        rs.getDate("dataCreazione").toLocalDate()
-                );
-
-                List<Calciatore> calciatori = getTuttiCalciatoriInLista(idLista);
-                calciatori.forEach(lista::aggiungiCalciatore);
-
-                return lista;
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Errore nel recupero della lista con ID: " + idLista, e);
-        }
-    }
-
     public List<Lista> getListePerUtente(int idUtente) {
 
         String sql = """
@@ -251,5 +188,4 @@ public class ListaDAO {
             return null;
         }
     }
-
 }

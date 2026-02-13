@@ -62,17 +62,6 @@ class ContrattoTest {
     }
 
     @Test
-    void testIsScaduto() {
-        Contratto attivo = new Contratto(calciatoreMock, squadraMock, 1000,
-                LocalDate.now().minusYears(1), LocalDate.now().plusDays(1));
-        assertFalse(attivo.isScaduto());
-
-        Contratto scaduto = new Contratto(calciatoreMock, squadraMock, 1000,
-                LocalDate.now().minusYears(2), LocalDate.now().minusDays(1));
-        assertTrue(scaduto.isScaduto());
-    }
-
-    @Test
     void testSetStipendioValidoENegativo() {
         Contratto c = new Contratto(calciatoreMock, squadraMock, 1000, inizio, fine);
 
