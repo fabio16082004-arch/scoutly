@@ -44,16 +44,6 @@ public class Lista {
         }
     }
 
-    public void rimuoviCalciatore(int idCalciatore) {
-        calciatori.removeIf(c -> c.getId() == idCalciatore);
-    }
-
-    public List<Calciatore> filtraPerRuolo(Ruolo ruolo) {
-        return calciatori.stream()
-                .filter(c -> c.getRuoli().contains(ruolo))
-                .collect(Collectors.toList());
-    }
-
     public int getIdLista() { return idLista; }
     public void setIdLista(int idLista) { this.idLista = idLista; }
 

@@ -22,8 +22,7 @@ class SquadraTest {
         assertThrows(IllegalArgumentException.class, () -> new Squadra(1, "", "A", "I"));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            Squadra s = new Squadra(1, "Milan", "A", "I");
-            s.setNome("   ");
+            Squadra s = new Squadra(1, "   ", "A", "I");
         });
     }
 }

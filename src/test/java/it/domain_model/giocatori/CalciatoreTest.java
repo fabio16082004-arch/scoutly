@@ -52,14 +52,6 @@ class CalciatoreTest {
     }
 
     @Test
-    void testDimensioniFisicheNegative() {
-        Calciatore c = new Calciatore(1, "Mario", "Rossi", LocalDate.of(1995, 1, 1), "Italia", 75, 180, ruoliBase);
-
-        assertThrows(IllegalArgumentException.class, () -> c.setPeso(-1));
-        assertThrows(IllegalArgumentException.class, () -> c.setAltezza(0));
-    }
-
-    @Test
     void testImmutabilitaRuoli() {
         Calciatore c = new Calciatore(1, "Mario", "Rossi", LocalDate.of(1995, 1, 1), "Italia", 75, 180, ruoliBase);
         Set<Ruolo> ruoliEstratti = c.getRuoli();

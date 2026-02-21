@@ -2,6 +2,7 @@ package it.domain_model.utenti;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OsservatoreTest {
 
@@ -25,8 +26,7 @@ class OsservatoreTest {
                 new Osservatore(1, "", "test@test.it"));
 
         assertThrows(IllegalArgumentException.class, () -> {
-            Osservatore o = new Osservatore(1, "Valido", "test@test.it");
-            o.setUsername("   ");
+            Osservatore o = new Osservatore(1, "   ", "test@test.it");
         });
     }
 
@@ -37,15 +37,10 @@ class OsservatoreTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 new Osservatore(1, "user", null));
-
-        Osservatore o = new Osservatore(1, "user", "ok@test.it");
-        assertThrows(IllegalArgumentException.class, () -> o.setEmail("email-non_valida"));
     }
 
     @Test
     void setEmailValida() {
-        Osservatore o = new Osservatore(1, "user", "vecchia@test.it");
-        o.setEmail("nuova@test.it");
-        assertEquals("nuova@test.it", o.getEmail());
+        assertDoesNotThrow( () -> new Osservatore(1, "user", "vecchia@test.it"));
     }
 }

@@ -2,77 +2,82 @@ package it.domain_model.statistiche;
 
 public class StatisticheCalciatoreStagione {
 
+    private String stagione;
     private int minutiGiocati;
-    private double gol;
-    private double assist;
+    private int gol;
+    private int assist;
     private double xG;
     private double xA;
 
-    private double tiriTotali;
-    private double tiriInPorta;
-    private double dribblingRiusciti;
-    private double tocchiInAreaAvversaria;
+    // Attacco
+    private int tiriTotali;
+    private int tiriInPorta;
+    private int dribblingRiusciti;
+    private int tocchiInAreaAvversaria;
 
-    private double contrastiVinti;
-    private double duelliAereiVinti;
+    // Difesa
+    private int contrastiVinti;
+    private int duelliAereiVinti;
 
-    private double passaggiChiave;
-    private double crossRiusciti;
-    private double passaggiRealizzati;
+    // Costruzione
+    private int passaggiChiave;
+    private int crossRiusciti;
+    private int passaggiRealizzati;
 
-    private double parate;
-    private double cleanSheet;
+    // Portiere
+    private int parate;
+    private int cleanSheet;
 
+    // Disciplina
     private int cartelliniGialli;
     private int cartelliniRossi;
 
-    public StatisticheCalciatoreStagione(int minutiGiocati, double gol, double assist, double xG, double xA,
-                                         double tiriTotali, double tiriInPorta, double dribblingRiusciti,
-                                         double tocchiInAreaAvversaria, double contrastiVinti, double duelliAereiVinti,
-                                         double passaggiChiave, double crossRiusciti, double passaggiRealizzati,
-                                         double parate, double cleanSheet, int cartelliniGialli, int cartelliniRossi) {
+    public StatisticheCalciatoreStagione(int minutiGiocati, int gol, int assist, double xG, double xA,
+                                         int tiriTotali, int tiriInPorta, int dribblingRiusciti,
+                                         int tocchiInAreaAvversaria, int contrastiVinti, int duelliAereiVinti,
+                                         int passaggiChiave, int crossRiusciti, int passaggiRealizzati,
+                                         int parate, int cleanSheet, int cartelliniGialli, int cartelliniRossi,
+                                         String stagione) {
+        this.setMinutiGiocati(minutiGiocati);
+        this.setGol(gol);
+        this.setAssist(assist);
+        this.setxG(xG);
+        this.setxA(xA);
+        this.setTiriTotali(tiriTotali);
+        this.setTiriInPorta(tiriInPorta);
+        this.setDribblingRiusciti(dribblingRiusciti);
+        this.setTocchiInAreaAvversaria(tocchiInAreaAvversaria);
+        this.setContrastiVinti(contrastiVinti);
+        this.setDuelliAereiVinti(duelliAereiVinti);
+        this.setPassaggiChiave(passaggiChiave);
+        this.setCrossRiusciti(crossRiusciti);
+        this.setPassaggiRealizzati(passaggiRealizzati);
+        this.setParate(parate);
+        this.setCleanSheet(cleanSheet);
+        this.setCartelliniGialli(cartelliniGialli);
+        this.setCartelliniRossi(cartelliniRossi);
+        this.setStagione(stagione);
+    }
 
-        setMinutiGiocati(minutiGiocati);
-        setGol(gol);
-        setAssist(assist);
-        setxG(xG);
-        setxA(xA);
-        setTiriTotali(tiriTotali);
-        setTiriInPorta(tiriInPorta);
-        setDribblingRiusciti(dribblingRiusciti);
-        setTocchiInAreaAvversaria(tocchiInAreaAvversaria);
-        setContrastiVinti(contrastiVinti);
-        setDuelliAereiVinti(duelliAereiVinti);
-        setPassaggiChiave(passaggiChiave);
-        setCrossRiusciti(crossRiusciti);
-        setPassaggiRealizzati(passaggiRealizzati);
-        setParate(parate);
-        setCleanSheet(cleanSheet);
-        setCartelliniGialli(cartelliniGialli);
-        setCartelliniRossi(cartelliniRossi);
+    private void validateNonNegative(int value, String msg) {
+        if (value < 0) throw new IllegalArgumentException(msg);
     }
 
     private void validateNonNegative(double value, String msg) {
         if (value < 0) throw new IllegalArgumentException(msg);
     }
 
-    private void validateNonNegativeInt(int value, String msg) {
-        if (value < 0) throw new IllegalArgumentException(msg);
-    }
-
-    // --- SETTERS ---
-
     public void setMinutiGiocati(int minutiGiocati) {
-        validateNonNegativeInt(minutiGiocati, "Minuti giocati non validi.");
+        validateNonNegative(minutiGiocati, "Minuti giocati non validi.");
         this.minutiGiocati = minutiGiocati;
     }
 
-    public void setGol(double gol) {
+    public void setGol(int gol) {
         validateNonNegative(gol, "I gol non possono essere negativi.");
         this.gol = gol;
     }
 
-    public void setAssist(double assist) {
+    public void setAssist(int assist) {
         validateNonNegative(assist, "Gli assist non possono essere negativi.");
         this.assist = assist;
     }
@@ -87,87 +92,94 @@ public class StatisticheCalciatoreStagione {
         this.xA = xA;
     }
 
-    public void setTiriTotali(double tiriTotali) {
+    public void setTiriTotali(int tiriTotali) {
         validateNonNegative(tiriTotali, "I tiri totali non possono essere negativi.");
         this.tiriTotali = tiriTotali;
     }
 
-    public void setTiriInPorta(double tiriInPorta) {
+    public void setTiriInPorta(int tiriInPorta) {
         validateNonNegative(tiriInPorta, "I tiri in porta non possono essere negativi.");
         this.tiriInPorta = tiriInPorta;
     }
 
-    public void setDribblingRiusciti(double dribblingRiusciti) {
+    public void setDribblingRiusciti(int dribblingRiusciti) {
         validateNonNegative(dribblingRiusciti, "I dribbling riusciti non possono essere negativi.");
         this.dribblingRiusciti = dribblingRiusciti;
     }
 
-    public void setTocchiInAreaAvversaria(double tocchi) {
+    public void setTocchiInAreaAvversaria(int tocchi) {
         validateNonNegative(tocchi, "I tocchi in area non possono essere negativi.");
         this.tocchiInAreaAvversaria = tocchi;
     }
 
-    public void setContrastiVinti(double contrastiVinti) {
+    public void setContrastiVinti(int contrastiVinti) {
         validateNonNegative(contrastiVinti, "I contrasti vinti non possono essere negativi.");
         this.contrastiVinti = contrastiVinti;
     }
 
-    public void setDuelliAereiVinti(double duelli) {
+    public void setDuelliAereiVinti(int duelli) {
         validateNonNegative(duelli, "I duelli aerei vinti non possono essere negativi.");
         this.duelliAereiVinti = duelli;
     }
 
-    public void setPassaggiChiave(double passaggiChiave) {
+    public void setPassaggiChiave(int passaggiChiave) {
         validateNonNegative(passaggiChiave, "I passaggi chiave non possono essere negativi.");
         this.passaggiChiave = passaggiChiave;
     }
 
-    public void setCrossRiusciti(double cross) {
+    public void setCrossRiusciti(int cross) {
         validateNonNegative(cross, "I cross riusciti non possono essere negativi.");
         this.crossRiusciti = cross;
     }
 
-    public void setPassaggiRealizzati(double passaggiRealizzati) {
+    public void setPassaggiRealizzati(int passaggiRealizzati) {
         validateNonNegative(passaggiRealizzati, "I passaggi realizzati non possono essere negativi.");
         this.passaggiRealizzati = passaggiRealizzati;
     }
 
-    public void setParate(double parate) {
+    public void setParate(int parate) {
         validateNonNegative(parate, "Le parate non possono essere negative.");
         this.parate = parate;
     }
 
-    public void setCleanSheet(double cleanSheet) {
+    public void setCleanSheet(int cleanSheet) {
         validateNonNegative(cleanSheet, "I clean sheet non possono essere negativi.");
         this.cleanSheet = cleanSheet;
     }
 
     public void setCartelliniGialli(int gialli) {
-        validateNonNegativeInt(gialli, "I cartellini gialli non possono essere negativi.");
+        validateNonNegative(gialli, "I cartellini gialli non possono essere negativi.");
         this.cartelliniGialli = gialli;
     }
 
     public void setCartelliniRossi(int rossi) {
-        validateNonNegativeInt(rossi, "I cartellini rossi non possono essere negativi.");
+        validateNonNegative(rossi, "I cartellini rossi non possono essere negativi.");
         this.cartelliniRossi = rossi;
     }
 
+    public void setStagione(String stagione) {
+        if (stagione == null || stagione.isBlank())
+            throw new IllegalArgumentException("Stagione non valida.");
+        this.stagione = stagione;
+    }
+
     public int getMinutiGiocati() { return minutiGiocati; }
-    public double getGol() { return gol; }
-    public double getAssist() { return assist; }
+    public int getGol() { return gol; }
+    public int getAssist() { return assist; }
     public double getxG() { return xG; }
     public double getxA() { return xA; }
-    public double getTiriTotali() { return tiriTotali; }
-    public double getTiriInPorta() { return tiriInPorta; }
-    public double getDribblingRiusciti() { return dribblingRiusciti; }
-    public double getTocchiInAreaAvversaria() { return tocchiInAreaAvversaria; }
-    public double getContrastiVinti() { return contrastiVinti; }
-    public double getDuelliAereiVinti() { return duelliAereiVinti; }
-    public double getPassaggiChiave() { return passaggiChiave; }
-    public double getCrossRiusciti() { return crossRiusciti; }
-    public double getPassaggiRealizzati() { return passaggiRealizzati; }
-    public double getParate() { return parate; }
-    public double getCleanSheet() { return cleanSheet; }
+    public int getTiriTotali() { return tiriTotali; }
+    public int getTiriInPorta() { return tiriInPorta; }
+    public int getDribblingRiusciti() { return dribblingRiusciti; }
+    public int getTocchiInAreaAvversaria() { return tocchiInAreaAvversaria; }
+    public int getContrastiVinti() { return contrastiVinti; }
+    public int getDuelliAereiVinti() { return duelliAereiVinti; }
+    public int getPassaggiChiave() { return passaggiChiave; }
+    public int getCrossRiusciti() { return crossRiusciti; }
+    public int getPassaggiRealizzati() { return passaggiRealizzati; }
+    public int getParate() { return parate; }
+    public int getCleanSheet() { return cleanSheet; }
     public int getCartelliniGialli() { return cartelliniGialli; }
     public int getCartelliniRossi() { return cartelliniRossi; }
+    public String getStagione() { return stagione; }
 }

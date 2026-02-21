@@ -1,4 +1,4 @@
-package it.business_logic.service;
+package it.business_logic.services;
 
 import it.ORM.DAO.ListaDAO;
 import it.domain_model.scouting.Lista;
@@ -39,6 +39,10 @@ public class ListaService {
         if (!eliminata) {
             throw new RuntimeException("Errore durante l'eliminazione della lista nel database.");
         }
+    }
+
+    public Lista getDettagliLista(int idLista){
+        return listaDAO.getListaById(idLista);
     }
 
     public List<Lista> getListeOsservatore(int idOsservatore) {

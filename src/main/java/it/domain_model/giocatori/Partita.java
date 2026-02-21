@@ -18,7 +18,7 @@ public class Partita {
         this.data = data;
         this.punteggioCasa = 0;
         this.punteggioOspite = 0;
-        setStagione(stagione);
+        validaStagione(stagione);
     }
 
     public Partita(int idPartita, int punteggioCasa, int punteggioOspite, LocalDate data, Squadra squadraCasa, Squadra squadraOspite, String stagione) {
@@ -28,7 +28,7 @@ public class Partita {
         this.data = data;
         this.squadraCasa = squadraCasa;
         this.squadraOspite = squadraOspite;
-        setStagione(stagione);
+        validaStagione(stagione);
     }
 
     public int getIdPartita() { return idPartita; }
@@ -47,7 +47,7 @@ public class Partita {
     public void setData(LocalDate data) { this.data = data; }
 
 
-    public void setStagione(String stagione) {
+    private void validaStagione(String stagione) {
         if (stagione == null) {
             throw new IllegalArgumentException("La stagione non può essere null");
         }

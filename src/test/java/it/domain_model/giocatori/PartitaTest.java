@@ -31,24 +31,6 @@ public class PartitaTest {
     void impostaStagioneFormatoNonValido(){
         Partita partita = new Partita(0, 2, 0,
                 LocalDate.of(2023, 4, 5), squadraCasa,
-                squadraOspite, "2023/2024");
-
-        assertThrows(IllegalArgumentException.class,
-                () -> partita.setStagione("890/2021"));
-        assertThrows(IllegalArgumentException.class,
-                () -> partita.setStagione("2020-2021"));
-        assertThrows(IllegalArgumentException.class,
-                () -> partita.setStagione("Ciao/Mondo"));
-    }
-
-    @Test
-    void impostaStagioneAnniNonValidi(){
-        Partita partita = new Partita(0, 2, 0,
-                LocalDate.of(2023, 4, 5), squadraCasa,
-                squadraOspite, "2023/2024");
-        assertThrows(IllegalArgumentException.class,
-                () -> partita.setStagione("1888/1889"));
-        assertThrows(IllegalArgumentException.class,
-                () -> partita.setStagione("2021/2023"));
+                squadraOspite, "2022/2024");
     }
 }

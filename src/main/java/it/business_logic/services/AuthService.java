@@ -1,4 +1,4 @@
-package it.business_logic.service;
+package it.business_logic.services;
 import it.ORM.DAO.OsservatoreDAO;
 import it.domain_model.utenti.Osservatore;
 
@@ -10,14 +10,10 @@ public class AuthService {
     }
 
     public Osservatore login(String username, String password) {
-        if (username == null || username.isBlank() || password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Username e password sono obbligatori.");
-        }
-
         Osservatore osservatore = osservatoreDAO.login(username, password);
 
         if (osservatore == null) {
-            System.out.println("Credenziali non valide per l'utente: " + username);
+            throw new RuntimeException("Credenziali non valide");
         }
 
         return osservatore;

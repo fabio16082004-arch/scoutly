@@ -52,8 +52,9 @@ public class ListaDAO {
     }
 
     public void creaLista(Lista lista) {
-        String sql = "INSERT INTO Lista (nomeLista, descrizione, dataCreazione, osservatore) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Lista (nomeLista, descrizione, dataCreazione, osservatore) VALUES (?, ?, ?, ?) RETURNING idLista";
 
+        int idListaGenerato = -1;
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -62,7 +63,14 @@ public class ListaDAO {
             ps.setObject(3, lista.getDataCreazione());
             ps.setInt(4, lista.getOsservatore().getId());
 
-            ps.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    idListaGenerato = rs.getInt(1);
+                    lista.setIdLista(idListaGenerato);
+                } else {
+                    throw new RuntimeException("Inserimento report fallito: nessun ID generato");
+                }
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Errore nella creazione della lista", e);

@@ -31,53 +31,25 @@ class ContrattoTest {
     @Test
     void testCreazioneContrattoValido() {
         Contratto c = new Contratto(calciatoreMock, squadraMock, 1000000, inizio, fine);
-
         assertNotNull(c);
         assertEquals(calciatoreMock, c.getCalciatore());
         assertEquals(1000000, c.getStipendio());
     }
 
     @Test
-    void testEccezioneCalciatoreOSquadraNull() {
+    void testContrattoInvalido() {
+        // 1. Validazione riferimenti obbligatori (null check)
         assertThrows(IllegalArgumentException.class, () ->
                 new Contratto(null, squadraMock, 1000, inizio, fine));
-
         assertThrows(IllegalArgumentException.class, () ->
                 new Contratto(calciatoreMock, null, 1000, inizio, fine));
-    }
-
-    @Test
-    void testStipendioNegativo() {
+        // 2. Validazione vincoli economici (stipendio negativo)
         assertThrows(IllegalArgumentException.class, () ->
                 new Contratto(calciatoreMock, squadraMock, -1, inizio, fine));
-    }
-
-    @Test
-    void testDateInvalide() {
+        // 3. Validazione coerenza temporale (date invertite)
         LocalDate dataInizio = LocalDate.of(2025, 1, 1);
         LocalDate dataFinePrecedente = LocalDate.of(2024, 12, 31);
-
         assertThrows(IllegalArgumentException.class, () ->
                 new Contratto(calciatoreMock, squadraMock, 1000, dataInizio, dataFinePrecedente));
-    }
-
-    @Test
-    void testSetStipendioValidoENegativo() {
-        Contratto c = new Contratto(calciatoreMock, squadraMock, 1000, inizio, fine);
-
-        c.setStipendio(2000f);
-        assertEquals(2000f, c.getStipendio());
-
-        assertThrows(IllegalArgumentException.class, () -> c.setStipendio(-500));
-    }
-
-    @Test
-    void testSetDataFineContrattoInvalida() {
-        Contratto c = new Contratto(calciatoreMock, squadraMock, 1000, inizio, fine);
-
-        LocalDate scadenzaImpossibile = inizio.minusDays(1);
-
-        assertThrows(IllegalArgumentException.class, () ->
-                c.setDataFineContratto(scadenzaImpossibile));
     }
 }

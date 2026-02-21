@@ -1,6 +1,7 @@
 package it.ORM.DAO;
 
 import it.ORM.db.DBConnection;
+import it.domain_model.giocatori.Calciatore;
 import it.domain_model.statistiche.StatisticheCalciatoreStagione;
 
 import java.sql.Connection;
@@ -28,13 +29,14 @@ public class StatisticheDAO {
                 "SUM(s.crossRiusciti), " +
                 "SUM(s.passaggiRealizzati), " +
                 "SUM(s.parate), " +
-                "SUM(s.cleanSheet), " +
+                "SUM(CASE WHEN s.cleanSheet THEN 1 ELSE 0 END), " +
                 "SUM(s.cartelliniGialli), " +
-                "SUM(s.cartelliniRossi) " +
+                "SUM(s.cartelliniRossi), " +
+                 "p.stagione " +
                 "FROM Statistiche s " +
                 "JOIN Partita p ON s.Partita = p.idPartita " +
                 "WHERE s.Calciatore = ? AND p.stagione = ? " +
-                "GROUP BY s.Calciatore";
+                "GROUP BY s.Calciatore, p.stagione";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -46,23 +48,24 @@ public class StatisticheDAO {
                 if (rs.next()) {
                     return new StatisticheCalciatoreStagione(
                             rs.getInt(1),    // minutiGiocati
-                            rs.getDouble(2), // gol
-                            rs.getDouble(3), // assist
-                            rs.getDouble(4), // xG
-                            rs.getDouble(5), // xA
-                            rs.getDouble(6), // tiriTotali
-                            rs.getDouble(7), // tiriInPorta
-                            rs.getDouble(8), // dribblingRiusciti
-                            rs.getDouble(9), // tocchiInAreaAvversaria
-                            rs.getDouble(10),// contrastiVinti
-                            rs.getDouble(11),// duelliAereiVinti
-                            rs.getDouble(12),// passaggiChiave
-                            rs.getDouble(13),// crossRiusciti
-                            rs.getDouble(14),// passaggiRealizzati
-                            rs.getDouble(15),// parate
-                            rs.getDouble(16),// cleanSheet
+                            rs.getInt(2), // gol
+                            rs.getInt(3), // assist
+                            rs.getInt(4), // xG
+                            rs.getInt(5), // xA
+                            rs.getInt(6), // tiriTotali
+                            rs.getInt(7), // tiriInPorta
+                            rs.getInt(8), // dribblingRiusciti
+                            rs.getInt(9), // tocchiInAreaAvversaria
+                            rs.getInt(10),// contrastiVinti
+                            rs.getInt(11),// duelliAereiVinti
+                            rs.getInt(12),// passaggiChiave
+                            rs.getInt(13),// crossRiusciti
+                            rs.getInt(14),// passaggiRealizzati
+                            rs.getInt(15),// parate
+                            rs.getInt(16),// cleanSheet
                             rs.getInt(17),   // cartelliniGialli
-                            rs.getInt(18)    // cartelliniRossi
+                            rs.getInt(18),   // cartelliniRossi
+                            rs.getString(19) //stagione
                     );
                 }
             }
@@ -73,4 +76,6 @@ public class StatisticheDAO {
 
         return null;
     }
+
+
 }

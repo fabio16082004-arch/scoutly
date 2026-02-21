@@ -1,11 +1,11 @@
 package it.business_logic.controllers;
 
-import it.business_logic.analisi.CalciatoreFiltro;
+import it.DTO.SchedaAvanzataDTO;
+import it.business_logic.filtro.CalciatoreFiltro;
 import it.domain_model.scouting.Lista;
-import it.domain_model.statistiche.StatisticheCalciatoreStagione;
-import it.business_logic.service.AnalisiService;
-import it.business_logic.service.ListaService;
-import it.business_logic.service.ReportService;
+import it.business_logic.services.AnalisiService;
+import it.business_logic.services.ListaService;
+import it.business_logic.services.ReportService;
 import it.domain_model.giocatori.Calciatore;
 import it.domain_model.scouting.Report;
 import it.domain_model.utenti.Osservatore;
@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 public class OsservatoreController {
-    private final ReportService scoutingService;
-    private final ListaService listService;
+    private final ReportService reportService;
+    private final ListaService listaService;
     private final AnalisiService analisiService;
 
-    public OsservatoreController(ReportService scoutingService,
-                                 ListaService listService,
+    public OsservatoreController(ReportService reportService,
+                                 ListaService listaService,
                                  AnalisiService analisiService) {
-        this.scoutingService = scoutingService;
-        this.listService = listService;
+        this.reportService = reportService;
+        this.listaService = listaService;
         this.analisiService = analisiService;
     }
 
@@ -30,42 +30,48 @@ public class OsservatoreController {
                                   List<Integer> idPartite, Map<String, Integer> voti,
                                   String noteFinali, boolean calcolaVoto, int votoComplessivo) {
 
-        return scoutingService.creaReport(idOsservatore, idCalciatore, idPartite, voti, noteFinali, calcolaVoto, votoComplessivo);
+        return reportService.creaReport(idOsservatore, idCalciatore, idPartite, voti, noteFinali, calcolaVoto, votoComplessivo);
     }
 
     public void cancellaReport(int idReport) {
-        scoutingService.eliminaReport(idReport);
+        reportService.eliminaReport(idReport);
     }
 
     public Report ottieniReport(int idReport){
-        return scoutingService.ottieniReport(idReport);
+        return reportService.ottieniReport(idReport);
     }
 
     public void creaNuovaLista(String nome, String descrizione, Osservatore osservatore) {
-        listService.creaLista(nome, descrizione, osservatore); //
+        listaService.creaLista(nome, descrizione, osservatore); //
     }
 
     public void aggiungiCalciatoreALista(int idLista, int idCalciatore) {
-        listService.aggiungiCalciatore(idLista, idCalciatore); // Passaggio di ID pulito
+        listaService.aggiungiCalciatore(idLista, idCalciatore); // Passaggio di ID pulito
     }
 
     public void rimuoviCalciatoreDaLista(int idLista, int idCalciatore) {
-        listService.rimuoviCalciatore(idLista, idCalciatore); //
+        listaService.rimuoviCalciatore(idLista, idCalciatore); //
     }
 
     public void eliminaLista(int idLista) {
-        listService.eliminaLista(idLista);
+        listaService.eliminaLista(idLista);
     }
 
-    public Map<Calciatore, Float> cercaGiocatori(CalciatoreFiltro filtro) {
+    public List<Calciatore> cercaGiocatori(CalciatoreFiltro filtro) {
         return analisiService.cercaGiocatori(filtro);
     }
 
-    public StatisticheCalciatoreStagione visualizzaDettagliCalciatore(int idCalciatore, String stagione, boolean normalizza) {
-        return analisiService.getStats(idCalciatore, stagione, normalizza);
+    public SchedaAvanzataDTO getDettagliCalciatore(int idCalciatore, String stagione) {
+        return analisiService.getStats(idCalciatore, stagione);
+    }
+
+    public Lista getDettagliLista(int idLista) {
+        return listaService.getDettagliLista(idLista);
     }
 
     public List<Lista> getListeOsservatore(int idOsservatore){
-        return listService.getListeOsservatore(idOsservatore);
+        return listaService.getListeOsservatore(idOsservatore);
     }
+
+
 }

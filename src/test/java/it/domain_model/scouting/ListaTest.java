@@ -50,35 +50,6 @@ public class ListaTest {
     }
 
     @Test
-    void testRimuoviCalciatoreEsistente() {
-        when(c1.getId()).thenReturn(1);
-        when(c2.getId()).thenReturn(2);
-
-        lista.aggiungiCalciatore(c1);
-        lista.aggiungiCalciatore(c2);
-
-        lista.rimuoviCalciatore(1);
-
-        assertEquals(1, lista.getCalciatori().size());
-        assertFalse(lista.getCalciatori().contains(c1));
-        assertTrue(lista.getCalciatori().contains(c2));
-    }
-
-    @Test
-    void testFiltraPerRuolo() {
-        when(c1.getRuoli()).thenReturn(Set.of(Ruolo.PUNTA_CENTRALE));
-        when(c2.getRuoli()).thenReturn(Set.of(Ruolo.DIFENSORE_CENTRALE));
-
-        lista.aggiungiCalciatore(c1);
-        lista.aggiungiCalciatore(c2);
-
-        List<Calciatore> punte = lista.filtraPerRuolo(Ruolo.PUNTA_CENTRALE);
-
-        assertEquals(1, punte.size());
-        assertEquals(c1, punte.get(0));
-    }
-
-    @Test
     void testDatiInizialiCostruttore() {
         assertNotNull(lista.getDataCreazione());
         assertEquals("Talenti 2026", lista.getNomeLista());

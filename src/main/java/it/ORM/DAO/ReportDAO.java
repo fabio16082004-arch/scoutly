@@ -85,6 +85,7 @@ public class ReportDAO {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         idReportGenerato = rs.getInt(1);
+                        report.setIdReport(idReportGenerato);
                     } else {
                         throw new RuntimeException("Inserimento report fallito: nessun ID generato");
                     }
@@ -123,7 +124,7 @@ public class ReportDAO {
         }
     }
     public boolean eliminaReport(int idReport){
-        String sql = "DELETE FROM report WHERE id = ?";
+        String sql = "DELETE FROM report WHERE idReport = ?";
         try(Connection conn = DBConnection.getInstance().getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setInt(1, idReport);

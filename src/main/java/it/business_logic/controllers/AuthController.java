@@ -1,6 +1,6 @@
 package it.business_logic.controllers;
 
-import it.business_logic.service.AuthService;
+import it.business_logic.services.AuthService;
 import it.domain_model.utenti.Osservatore;
 
 public class AuthController {

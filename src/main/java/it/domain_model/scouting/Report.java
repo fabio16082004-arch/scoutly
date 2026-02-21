@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Report {
-    Osservatore utente;
-    Calciatore calciatore;
-    List<Partita> partite;
+    private int idReport;
+
+    private Osservatore utente;
+    private Calciatore calciatore;
+    private List<Partita> partite;
     private Map<String, Integer> voti;
     private int votoComplessivo;
     private String noteFinali;
@@ -28,6 +30,14 @@ public class Report {
         this.votoComplessivo = 0;
     }
 
+    public int getIdReport() {
+        return idReport;
+    }
+
+    public void setIdReport(int idReport) {
+        this.idReport = idReport;
+    }
+
     public void aggiungiPartita(Partita partita){
         if(partita != null){
             partite.add(partita);
@@ -37,17 +47,21 @@ public class Report {
     public void aggiungiVoto(String parametro, int voto){
         if(voto >= 1 && voto <= 10){
             voti.put(parametro, voto);
-        }else{
+        } else {
             throw new IllegalArgumentException("Il voto dato per un parametro deve essere compreso tra 1 e 10");
         }
     }
 
     public void calcolaVotoComplessivo(){
+        if (voti.isEmpty()) {
+            this.votoComplessivo = 0;
+            return;
+        }
         float votoFinale = 0;
-        for(Integer voto: voti.values()){
+        for(Integer voto : voti.values()){
             votoFinale += voto;
         }
-        this.votoComplessivo = Math.round(votoFinale / voti.size());;
+        this.votoComplessivo = Math.round(votoFinale / voti.size());
     }
 
     public void setNoteFinali(String note) { this.noteFinali = note; }
@@ -62,7 +76,9 @@ public class Report {
 
     public int getVotoComplessivo() { return votoComplessivo; }
 
-    public String getNoteFinali() { return noteFinali; } public LocalDate getDataCreazione() { return dataCreazione; }
+    public String getNoteFinali() { return noteFinali; }
+
+    public LocalDate getDataCreazione() { return dataCreazione; }
 
     public Map<String, Integer> getMappaVoti() {
         return voti;
@@ -70,7 +86,7 @@ public class Report {
 
     public void setVotoComplessivo(int votoComplessivo){
         if(votoComplessivo < 0 || votoComplessivo > 10)
-            throw new IllegalArgumentException("Il voto devo essere compreso tra 1 e 10");
+            throw new IllegalArgumentException("Il voto deve essere compreso tra 1 e 10");
         this.votoComplessivo = votoComplessivo;
     }
 }

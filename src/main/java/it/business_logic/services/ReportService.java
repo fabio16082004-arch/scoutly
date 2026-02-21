@@ -1,4 +1,4 @@
-package it.business_logic.service;
+package it.business_logic.services;
 
 import it.ORM.DAO.ReportDAO;
 import it.ORM.DAO.CalciatoreDAO;
@@ -14,13 +14,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 public class ReportService {
-    // Riferimenti ai DAO necessari per trasformare gli ID in Oggetti
     private final ReportDAO reportDAO;
     private final CalciatoreDAO calciatoreDAO;
     private final OsservatoreDAO osservatoreDAO;
     private final PartitaDAO partitaDAO;
 
-    // Costruttore con Dependency Injection di tutti i DAO richiesti
     public ReportService(ReportDAO reportDAO, CalciatoreDAO calciatoreDAO,
                          OsservatoreDAO osservatoreDAO, PartitaDAO partitaDAO) {
         this.reportDAO = reportDAO;
@@ -42,7 +40,6 @@ public class ReportService {
 
         Report report = new Report(osservatore, calciatore);
 
-        // 3. UC #4: Conversione della lista di ID Partite in Oggetti Partita reali
         if (idPartite != null && !idPartite.isEmpty()) {
             for (Integer idPartita : idPartite) {
                 Partita partita = partitaDAO.getById(idPartita);
@@ -77,12 +74,6 @@ public class ReportService {
     }
 
     public Report ottieniReport(int idReport) {
-        Report report = reportDAO.getReportById(idReport);
-
-        if (report == null) {
-            throw new NoSuchElementException("Report con ID " + idReport + " non trovato.");
-        }
-
-        return report;
+        return reportDAO.getReportById(idReport);
     }
 }

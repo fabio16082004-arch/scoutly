@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Calciatore {
-    private final int id;
-    private final String nome;
-    private final String cognome;
-    private final LocalDate dataNascita;
-    private final String nazionalita;
+    private int id;
+    private String nome;
+    private String cognome;
+    private LocalDate dataNascita;
+    private String nazionalita;
 
     private float peso;
     private float altezza;
@@ -24,7 +24,7 @@ public class Calciatore {
             throw new IllegalArgumentException("Nome e cognome sono obbligatori.");
         }
 
-        if (dataNascita == null || Period.between(dataNascita, LocalDate.now()).getYears() < 14) {
+        if (dataNascita == null || Period.between(dataNascita, LocalDate.now()).getYears() < 16) {
             throw new IllegalArgumentException("Il calciatore deve avere almeno 14 anni.");
         }
 
@@ -50,16 +50,6 @@ public class Calciatore {
         return Period.between(dataNascita, LocalDate.now()).getYears();
     }
 
-    public void setPeso(float peso) {
-        if (peso <= 0) throw new IllegalArgumentException("Peso non valido.");
-        this.peso = peso;
-    }
-
-    public void setAltezza(float altezza) {
-        if (altezza <= 0) throw new IllegalArgumentException("Altezza non valida.");
-        this.altezza = altezza;
-    }
-
     public int getId() { return id; }
     public String getNome() { return nome; }
     public String getCognome() { return cognome; }
@@ -69,7 +59,7 @@ public class Calciatore {
     public float getAltezza() { return altezza; }
 
     public Set<Ruolo> getRuoli() {
-        return Collections.unmodifiableSet(ruoli);
+        return Set.copyOf(ruoli);
     }
 
 }

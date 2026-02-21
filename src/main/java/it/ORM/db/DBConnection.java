@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public final class DBConnection {
+public class DBConnection {
 
     private static DBConnection instance;
     private final DataSource dataSource;
