@@ -37,7 +37,7 @@ public class ReportTest {
         assertEquals(1, report.getPartite().size());
         assertTrue(report.getPartite().contains(partitaMock));}
     @Test
-    public void testAggiungiPartitaNullNonModificaLista() {
+    public void testAggiungiPartitaNull() {
         report.aggiungiPartita(null);
         assertTrue(report.getPartite().isEmpty());
     }

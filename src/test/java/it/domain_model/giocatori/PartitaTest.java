@@ -29,8 +29,8 @@ public class PartitaTest {
 
     @Test
     void impostaStagioneFormatoNonValido(){
-        Partita partita = new Partita(0, 2, 0,
+        assertThrows(IllegalArgumentException.class, () -> new Partita(0, 2, 0,
                 LocalDate.of(2023, 4, 5), squadraCasa,
-                squadraOspite, "2022/2024");
+                squadraOspite, "2022/2024"));
     }
 }

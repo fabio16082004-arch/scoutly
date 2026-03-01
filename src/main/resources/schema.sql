@@ -1,7 +1,5 @@
--- Pulizia iniziale di tutte le tabelle (ordine corretto per le Foreign Keys)
 DROP TABLE IF EXISTS Statistiche, ReportPartite, Voto, Report, ListaCalciatore, Lista, Contratto, RuoloCalciatore, Partita, Calciatore, Squadra, Osservatore, Ruolo CASCADE;
 
--- Definizione Tabelle Anagrafiche
 CREATE TABLE Ruolo (
                        Sigla VARCHAR(5) PRIMARY KEY,
                        descrizioneEstesa VARCHAR(100)
@@ -31,7 +29,6 @@ CREATE TABLE Calciatore (
                             altezza INT
 );
 
--- Relazioni e Strutture Core
 CREATE TABLE RuoloCalciatore (
                                  Sigla VARCHAR(5) REFERENCES Ruolo(Sigla),
                                  Calciatore INT REFERENCES Calciatore(idCalciatore),
@@ -71,7 +68,6 @@ CREATE TABLE Partita (
                          squadraOspite INT REFERENCES Squadra(idSquadra)
 );
 
--- Sezione Report e Valutazioni
 CREATE TABLE Report (
                         idReport SERIAL PRIMARY KEY,
                         votoComplessivo DECIMAL(3,1),
@@ -98,7 +94,6 @@ CREATE TABLE ReportPartite (
                                PRIMARY KEY (idReport, idPartita)
 );
 
--- Sezione Statistiche Avanzate
 CREATE TABLE Statistiche (
                              Calciatore INT REFERENCES Calciatore(idCalciatore),
                              Partita INT REFERENCES Partita(idPartita),
