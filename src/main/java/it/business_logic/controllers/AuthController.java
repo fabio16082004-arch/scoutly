@@ -11,10 +11,10 @@ public class AuthController {
     }
 
     public void registraUtente(String username, String email, String password) {
-        authService.registraNuovoOsservatore(username, email, password); //
+        authService.registraNuovoOsservatore(username, email, password);
     }
 
     public Osservatore login(String username, String password) {
-        return authService.login(username, password); //
+        return authService.login(username, password);
     }
 }

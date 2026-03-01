@@ -42,15 +42,15 @@ public class OsservatoreController {
     }
 
     public void creaNuovaLista(String nome, String descrizione, Osservatore osservatore) {
-        listaService.creaLista(nome, descrizione, osservatore); //
+        listaService.creaLista(nome, descrizione, osservatore);
     }
 
     public void aggiungiCalciatoreALista(int idLista, int idCalciatore) {
-        listaService.aggiungiCalciatore(idLista, idCalciatore); // Passaggio di ID pulito
+        listaService.aggiungiCalciatore(idLista, idCalciatore);
     }
 
     public void rimuoviCalciatoreDaLista(int idLista, int idCalciatore) {
-        listaService.rimuoviCalciatore(idLista, idCalciatore); //
+        listaService.rimuoviCalciatore(idLista, idCalciatore);
     }
 
     public void eliminaLista(int idLista) {

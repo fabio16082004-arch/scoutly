@@ -62,8 +62,8 @@ INSERT INTO ReportPartite (idReport, idPartita) VALUES (10, 1);
 INSERT INTO ReportPartite (idReport, idPartita) VALUES (10, 4);
 
 -- VOTO (La colonna si chiama idReport come definito nello schema)
-INSERT INTO Voto (idReport, categoria, punteggio) VALUES (10, 'Tecnica', 9);
-INSERT INTO Voto (idReport, categoria, punteggio) VALUES (10, 'Fisico', 7);
+INSERT INTO Voto (idReport, nota, punteggio) VALUES (10, 'Tecnica', 9);
+INSERT INTO Voto (idReport, nota, punteggio) VALUES (10, 'Fisico', 7);
 
 -- ... (inserimenti successivi di Lista, Statistiche, ecc.)
 

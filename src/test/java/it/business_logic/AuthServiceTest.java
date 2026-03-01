@@ -41,8 +41,8 @@ class AuthServiceTest {
 
     @Test
     void testLoginUtenteNonEsistente() {
-        Osservatore result = authService.login("utente.inesistente", "qualsiasi");
-        assertNull(result);
+        assertThrows(RuntimeException.class,
+                () -> authService.login("utente.inesistente", "qualsiasi"));
     }
 
     @Test

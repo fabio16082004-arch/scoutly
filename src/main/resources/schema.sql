@@ -78,15 +78,18 @@ CREATE TABLE Report (
                         noteFinali TEXT,
                         dataCreazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         utente INT NOT NULL REFERENCES Osservatore(idOsservatore),
-                        calciatore INT NOT NULL REFERENCES Calciatore(idCalciatore),
-                        UNIQUE (utente, calciatore)
+                        calciatore INT NOT NULL REFERENCES Calciatore(idCalciatore)
 );
 
 CREATE TABLE Voto (
-                      idReport INT REFERENCES Report(idReport) ON DELETE CASCADE,
-                      categoria VARCHAR(50),
+                      idVoto SERIAL PRIMARY KEY,
+                      idReport INT NOT NULL,
+                      nota VARCHAR(255),
                       punteggio INT,
-                      PRIMARY KEY (idReport, categoria)
+                      CONSTRAINT fk_voto_report
+                          FOREIGN KEY (idReport)
+                              REFERENCES Report(idReport)
+                              ON DELETE CASCADE
 );
 
 CREATE TABLE ReportPartite (

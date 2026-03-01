@@ -24,7 +24,7 @@ public class ReportDAO {
 
     public Report getReportById(int idReport) {
         String sqlReport = "SELECT * FROM Report WHERE idReport = ?";
-        String sqlVoti = "SELECT categoria, punteggio FROM Voto WHERE idReport = ?";
+        String sqlVoti = "SELECT nota, punteggio FROM Voto WHERE idReport = ?";
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlReport)) {
 
@@ -44,7 +44,7 @@ public class ReportDAO {
                     psVoti.setInt(1, idReport);
                     ResultSet rsVoti = psVoti.executeQuery();
                     while (rsVoti.next()) {
-                        report.aggiungiVoto(rsVoti.getString("categoria"), rsVoti.getInt("punteggio"));
+                        report.aggiungiVoto(rsVoti.getString("nota"), rsVoti.getInt("punteggio"));
                     }
                 }
 
@@ -64,13 +64,10 @@ public class ReportDAO {
         String inserisciReport =
                 "INSERT INTO Report (votoComplessivo, noteFinali, dataCreazione, utente, calciatore) " +
                         "VALUES (?, ?, ?, ?, ?) RETURNING idReport";
-
-        String inserisciVoto =
-                "INSERT INTO Voto (idReport, categoria, punteggio) VALUES (?, ?, ?)";
+        String inserisciVoto = "INSERT INTO Voto (idReport, nota, punteggio) VALUES (?, ?, ?)";
 
         int idReportGenerato = -1;
         Connection conn = null;
-
         try {
             conn = DBConnection.getInstance().getConnection();
             conn.setAutoCommit(false);
