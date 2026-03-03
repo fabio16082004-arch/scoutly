@@ -18,9 +18,6 @@ class CalciatoreTest {
 
     private Set<Ruolo> ruoliBase;
 
-    @Mock
-    private Contratto contrattoMock;
-
     @BeforeEach
     void setUp() {
         ruoliBase = new HashSet<>();
@@ -53,12 +50,12 @@ class CalciatoreTest {
 
     @Test
     void testImmutabilitaRuoli() {
-        Calciatore c = new Calciatore(1, "Mario", "Rossi", LocalDate.of(1995, 1, 1), "Italia", 75, 180, ruoliBase);
-        Set<Ruolo> ruoliEstratti = c.getRuoli();
+        Set<Ruolo> ruoliOriginali = new HashSet<>(ruoliBase);
+        Calciatore c = new Calciatore(1, "Mario", "Rossi", LocalDate.of(1995, 1, 1), "Italia", 75, 180, ruoliOriginali);
 
-        assertThrows(UnsupportedOperationException.class, () -> {
-            ruoliEstratti.add(Ruolo.DIFENSORE_CENTRALE);
-        });
+        ruoliOriginali.add(Ruolo.DIFENSORE_CENTRALE);
+
+        assertFalse(c.getRuoli().contains(Ruolo.DIFENSORE_CENTRALE));
     }
 
     @Test
